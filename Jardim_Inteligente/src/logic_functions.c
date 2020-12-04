@@ -10,6 +10,8 @@
 #include "adc_basic.h"
 #define F_CPU 16000000
 #include <util/delay.h>
+#include <atmel_start_pins.h>
+#include <pwm_basic.h>
 
 struct Tela TELA;
 struct Edicao edicao;
@@ -134,10 +136,10 @@ void mostrar_status_atuadores(){
 	
 	// Bombda dagua
 	nokia_lcd_write_string("Teto: ", 1);
-	if(status.motor_teto == 1){
-		snprintf(temp.buf, tam_vetor, "ON");
+	if(status.Teto == 1){
+		snprintf(temp.buf, tam_vetor, "Aberto");
 		}else{
-		snprintf(temp.buf, tam_vetor, "OFF");
+		snprintf(temp.buf, tam_vetor, "Fechado");
 	}
 	nokia_lcd_write_string(temp.buf, 1);
 
@@ -258,6 +260,7 @@ void atualizar_tela(){
 	controle_ar_condicionado();
 	controle_motor_bomba_dagua();
 	controle_motor_teto();
+	controle_LED();
 	
 	switch(TELA.pagina_atual){
 		case 1:
@@ -344,7 +347,7 @@ void reset_status_dos_atuadores(){
 	status.bombda_dagua = 0;
 	status.ar_condicionado = 0;
 	status.LED = 0;
-	status.motor_teto = 0;
+	status.Teto = 1;
 }
 
 void reset_flags_das_interrupcoes(){
@@ -366,18 +369,9 @@ void reset_LCD(){
 }
 
 //inicializar gerador de PWM
-
-void inicializar_PWM(){
-	DDRD |= (1<<PD5) | (1<<PD6);
-	PORTB &= 0x97; //Zera o estado das portas D5 e D6, e mantém o estado original das demais
-	
-	TCCR0A = (1<<COM0A1) | (1<<COM0B1) | (1<<WGM01) | (1<<WGM00); //Modo não invertido para A e B.
-	TCCR0B = (1<<CS02); //Pre-escale de ~244hz
-	
-	//OCR0A = 0; //D6
-	//OCR0B = 0; //D5
+void reset_PWM(){
+	PWM_0_load_top(125);
 }
-
 
 void iniciar_sistema(){
 	ADC_0_start_conversion(0);
@@ -390,60 +384,70 @@ void iniciar_sistema(){
 	reset_edicao();                     // Iniciar estrutura de dados flags da edição
 	reset_historico_de_portas();        // Iniciar estrutura de dados Historico das portas
 	reset_LCD();                        // Iniciar estrutura de dados TELA
-	//inicializar_PWM();
+	reset_PWM();                        // Iniciar PWM
 }
-
-
 
 //Controle de saídas
+//
+// controle_ar_condicionado
+// Liga o ar se estiver muito quente
 void controle_ar_condicionado(){
-	if(valores_atuais.temperatura >= config_intervalo_aceitavel.temperatura.max && status.ar_condicionado==0){
+	if(valores_atuais.temperatura >= config_intervalo_aceitavel.temperatura.max && status.ar_condicionado == 0){
 		status.ar_condicionado = 1;
-		PORTB |= 1;
+		Controle_Ar_condicionado_set_level(true);
 	}
-	else if(valores_atuais.temperatura < config_intervalo_aceitavel.temperatura.min && status.ar_condicionado==1){
+	else if(valores_atuais.temperatura < config_intervalo_aceitavel.temperatura.min && status.ar_condicionado == 1){
 		status.ar_condicionado = 0;
-		PORTB |= 0xFE;
+		Controle_Ar_condicionado_set_level(false);
 	}
 }
 
-
-
+// controle_motor_teto
+// Fecha ou abre o teto dependendo do nível de radiação solar
 void controle_motor_teto(){
 	//Fechar teto
-	if(valores_atuais.radiacao_solar >= config_intervalo_aceitavel.radiacao_solar.max && status.motor_teto==1){
-		status.motor_teto=1; //Teto fechado
-		PORTC |= 0b1000000; //LED/Comando
+	if(valores_atuais.radiacao_solar >= config_intervalo_aceitavel.radiacao_solar.max && status.Teto == 1){
+		status.Teto = 0; //Teto fechado
+		Controle_Motor_Teto_set_level(true); //LED/Comando
 		_delay_ms(20);//2 segundos fechando
-		PORTC &= ~(0b1000000); //Desativa o motor
+		Controle_Motor_Teto_set_level(false); //Desativa o motor
 	}
 	//Abrir teto
-	if(valores_atuais.radiacao_solar >= config_intervalo_aceitavel.radiacao_solar.max && status.motor_teto==1){
-		status.motor_teto=0; //Teto aberto
-		PORTC |= 0b1000000; //LED/Comando
+	if(valores_atuais.radiacao_solar < config_intervalo_aceitavel.radiacao_solar.max && status.Teto == 0){
+		status.Teto = 1; //Teto aberto
+		Controle_Motor_Teto_set_level(true); //LED/Comando
 		_delay_ms(20);//2 segundos fechando
-		PORTC &= ~(0b1000000); //Desativa o motor
+		Controle_Motor_Teto_set_level(false); //Desativa o motor
 	}
 	
 }
 
-
+// controle_motor_bomba_dagua
+// Rega as plantas se a umidade do solo estiver muito baixa
 void controle_motor_bomba_dagua(){
-	//ativar motor
-	if(valores_atuais.umidade <= config_intervalo_aceitavel.umidade.min && status.bombda_dagua==0){
-		status.bombda_dagua=1; //Liga a bomba dagua
-		PORTC |= 0b0100000; //LED/Comando C5
-		_delay_ms(20);//2 segundos fechando
-		PORTC &= ~(0b0100000);   //LED/Comando C5 bomba dágua
+	if(valores_atuais.umidade <= config_intervalo_aceitavel.umidade.min && status.bombda_dagua == 0){
+		status.bombda_dagua = 1;
+		Controle_Motor_Bomba_Agua_set_level(true);
 	}
-	
-	//Desativar motor
-	if(valores_atuais.umidade >= config_intervalo_aceitavel.umidade.max && status.bombda_dagua==1){
-		status.bombda_dagua=0; //Liga a bomba dagua
-		PORTC |= 0b0100000; //LED/Comando C5
-		_delay_ms(20);//2 segundos fechando
-		PORTC &= ~(0b0100000);   //LED/Comando C5 bomba dágua
-	}	
+	else if(valores_atuais.umidade > config_intervalo_aceitavel.umidade.min && status.bombda_dagua == 1){
+		status.bombda_dagua = 0;
+		Controle_Motor_Bomba_Agua_set_level(false);
+	}
 }
 
-
+void controle_LED(){
+	if(valores_atuais.radiacao_solar < config_intervalo_aceitavel.radiacao_solar.min){
+		status.LED = 1;
+		if(config_intervalo_aceitavel.radiacao_solar.min - valores_atuais.radiacao_solar < 5){
+			PWM_0_load_duty_cycle_ch1(128);
+		}else if(config_intervalo_aceitavel.radiacao_solar.min - valores_atuais.radiacao_solar < 15){
+			PWM_0_load_duty_cycle_ch1(170);
+		}else{
+			PWM_0_load_duty_cycle_ch1(254);
+		}
+	}
+	else if(valores_atuais.radiacao_solar > config_intervalo_aceitavel.radiacao_solar.min){
+		status.LED = 0;
+		PWM_0_load_duty_cycle_ch1(0);
+	}
+}

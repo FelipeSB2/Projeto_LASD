@@ -32,7 +32,6 @@
  *@{
  */
 #include <exint.h>
-#include "logic_functions.h"
 
 /**
  * \brief Initialize EXTERNAL_IRQ_0 interface

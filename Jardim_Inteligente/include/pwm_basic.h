@@ -47,17 +47,13 @@ void PWM_0_enable();
 
 void PWM_0_disable();
 
-void PWM_0_enable_output_ch0();
-
-void PWM_0_disable_output_ch0();
-
 void PWM_0_enable_output_ch1();
 
 void PWM_0_disable_output_ch1();
 
 void PWM_0_load_counter(PWM_0_register_t counter_value);
 
-void PWM_0_load_duty_cycle_ch0(PWM_0_register_t duty_value);
+void PWM_0_load_top(PWM_0_register_t top_value);
 
 void PWM_0_load_duty_cycle_ch1(PWM_0_register_t duty_value);
 

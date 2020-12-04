@@ -54,12 +54,12 @@ int8_t PWM_0_init()
 	/* Enable TC0 */
 	PRR &= ~(1 << PRTIM0);
 
-	TCCR0A = (0 << COM0A1) | (0 << COM0A0)   /* Normal port operation, OCA disconnected */
-	         | (0 << COM0B1) | (0 << COM0B0) /* Normal port operation, OCB disconnected */
-	         | (0 << WGM01) | (1 << WGM00);  /* TC8 Mode 1 Phase Correct */
+	TCCR0A = (1 << COM0A1) | (0 << COM0A0)   /* Clear OCA on Compare Match, set OCA on BOTTOM (non-inverting mode) */
+	         | (1 << COM0B1) | (0 << COM0B0) /* Clear OCB on Compare Match, set OCB on BOTTOM (non-inverting mode) */
+	         | (1 << WGM01) | (1 << WGM00);  /* TC8 Mode 7 Fast PWM */
 
-	// TCCR0B = 0 /* TC8 Mode 1 Phase Correct */
-	//		 | (0 << CS02) | (0 << CS01) | (0 << CS00); /* No clock source (Timer/Counter stopped) */
+	TCCR0B = 1                                          /* TC8 Mode 7 Fast PWM */
+	         | (0 << CS02) | (0 << CS01) | (1 << CS00); /* No prescaling */
 
 	// TIMSK0 = 0 << OCIE0B /* Output Compare B Match Interrupt Enable: disabled */
 	//		 | 0 << OCIE0A /* Output Compare A Match Interrupt Enable: disabled */
@@ -95,28 +95,6 @@ void PWM_0_disable()
 }
 
 /**
- * \brief Enable PWM output on channel 0
- *
- * \return Nothing
- */
-void PWM_0_enable_output_ch0()
-{
-
-	TCCR0A |= ((0 << COM0A1) | (0 << COM0A0));
-}
-
-/**
- * \brief Disable PWM output on channel 0
- *
- * \return Nothing
- */
-void PWM_0_disable_output_ch0()
-{
-
-	TCCR0A &= ~((0 << COM0A1) | (0 << COM0A0));
-}
-
-/**
  * \brief Enable PWM output on channel 1
  *
  * \return Nothing
@@ -124,7 +102,7 @@ void PWM_0_disable_output_ch0()
 void PWM_0_enable_output_ch1()
 {
 
-	TCCR0A |= ((0 << COM0B1) | (0 << COM0B0));
+	TCCR0A |= ((1 << COM0B1) | (0 << COM0B0));
 }
 
 /**
@@ -151,18 +129,16 @@ void PWM_0_load_counter(PWM_0_register_t counter_value)
 }
 
 /**
- * \brief Load duty cycle register in for channel 0.
- * The physical register may have different names, depending on the hardware.
- * This is not the duty cycle as percentage of the whole period, but the actual
- * counter compare value.
+ * \brief Load TOP register in PWM_0.
+ * The physical register may different names, depending on the hardware and module mode.
  *
- * \param[in] counter_value The value to load into the duty cycle register.
+ * \param[in] counter_value The value to load into TOP.
  *
  * \return Nothing
  */
-void PWM_0_load_duty_cycle_ch0(PWM_0_register_t duty_value)
+void PWM_0_load_top(PWM_0_register_t top_value)
 {
-	OCR0A = duty_value;
+	OCR0A = top_value;
 }
 
 /**

@@ -47,7 +47,7 @@ void EXTERNAL_IRQ_0_initialization(void)
 	    // <id> pad_pull_config
 	    // <PORT_PULL_OFF"> Off
 	    // <PORT_PULL_UP"> Pull-up
-	    PORT_PULL_OFF);
+	    PORT_PULL_UP);
 
 	// Set pin direction to input
 	Interrupcao_Usuario1_set_dir(PORT_DIR_IN);
@@ -57,7 +57,7 @@ void EXTERNAL_IRQ_0_initialization(void)
 	    // <id> pad_pull_config
 	    // <PORT_PULL_OFF"> Off
 	    // <PORT_PULL_UP"> Pull-up
-	    PORT_PULL_OFF);
+	    PORT_PULL_UP);
 
 	// Set pin direction to input
 	Interrupcao_Usuario2_set_dir(PORT_DIR_IN);
@@ -67,7 +67,7 @@ void EXTERNAL_IRQ_0_initialization(void)
 	    // <id> pad_pull_config
 	    // <PORT_PULL_OFF"> Off
 	    // <PORT_PULL_UP"> Pull-up
-	    PORT_PULL_OFF);
+	    PORT_PULL_UP);
 
 	// Set pin direction to input
 	Interrupcao_Usuario3_set_dir(PORT_DIR_IN);
@@ -77,7 +77,7 @@ void EXTERNAL_IRQ_0_initialization(void)
 	    // <id> pad_pull_config
 	    // <PORT_PULL_OFF"> Off
 	    // <PORT_PULL_UP"> Pull-up
-	    PORT_PULL_OFF);
+	    PORT_PULL_UP);
 
 	EXTERNAL_IRQ_0_init();
 }
@@ -101,13 +101,6 @@ void ADC_0_initialization(void)
 	ADC_0_init();
 }
 
-/* Configure pins and initialize registers */
-void AC_0_initialization(void)
-{
-
-	AC_0_init();
-}
-
 void PWM_0_initialization(void)
 {
 
@@ -120,6 +113,18 @@ void PWM_0_initialization(void)
 void system_init()
 {
 	mcu_init();
+
+	/* PORT setting on PB0 */
+
+	// Set pin direction to output
+	Controle_Ar_condicionado_set_dir(PORT_DIR_OUT);
+
+	Controle_Ar_condicionado_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
 
 	/* PORT setting on PB1 */
 
@@ -181,23 +186,47 @@ void system_init()
 	    // <true"> High
 	    false);
 
-	/* PORT setting on PD6 */
+	/* PORT setting on PC5 */
 
-	// Disable pull-up.
-	Comparador_Pos_Bateria_set_pull_mode(PORT_PULL_OFF);
+	// Set pin direction to output
+	Controle_Motor_Bomba_Agua_set_dir(PORT_DIR_OUT);
 
-	/* PORT setting on PD7 */
+	Controle_Motor_Bomba_Agua_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
 
-	// Disable pull-up.
-	Comparador_Neg_Bateria_set_pull_mode(PORT_PULL_OFF);
+	/* PORT setting on PC6 */
+
+	// Set pin direction to output
+	Controle_Motor_Teto_set_dir(PORT_DIR_OUT);
+
+	Controle_Motor_Teto_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
+
+	/* PORT setting on PD5 */
+
+	// Set pin direction to output
+	Controle_LED_PWM_set_dir(PORT_DIR_OUT);
+
+	Controle_LED_PWM_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
 
 	sysctrl_init();
 
 	EXTERNAL_IRQ_0_initialization();
 
 	ADC_0_initialization();
-
-	AC_0_initialization();
 
 	PWM_0_initialization();
 }

@@ -20,8 +20,8 @@ driver_isr.d driver_isr.o: .././driver_isr.c ../include/driver_init.h \
  ../Config/clock_config.h ../include/port.h ../include/atmel_start_pins.h \
  ../include/sysctrl.h ../utils/atomic.h ../include/protected_io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sleep.h \
- ../include/exint.h ../include/adc_basic.h ../include/ac.h \
- ../include/pwm_basic.h ../include/logic_functions.h \
+ ../include/exint.h ../include/adc_basic.h ../include/pwm_basic.h \
+ ../include/logic_functions.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  ../include/nokia5110.h \
@@ -82,8 +82,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../include/exint.h:
 
 ../include/adc_basic.h:
-
-../include/ac.h:
 
 ../include/pwm_basic.h:
 

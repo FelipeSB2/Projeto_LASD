@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "nokia5110.h"
+#include <atmel_start_pins.h>
 
 // <h> Configuração do total de páginas
 // <i> Isso define o total de páginas a serem mostradas
@@ -54,7 +55,7 @@ struct Status_atuadores{
 	uint8_t bombda_dagua;
 	uint8_t ar_condicionado;
 	uint8_t LED;
-	uint8_t motor_teto;
+	uint8_t Teto;
 };
 
 // Temp_interrupcao
@@ -155,10 +156,10 @@ void reset_flags_das_interrupcoes();
 void reset_historico_de_portas();
 void reset_LCD();
 void iniciar_sistema();
-void inicializar_PWM();
 void controle_ar_condicionado();
+void controle_motor_bomba_dagua();
 void controle_motor_teto();
-//void controle_motor_bomba_dagua()
+void controle_LED();
 
 // Variáveis
 extern struct Tela TELA;
@@ -171,6 +172,5 @@ extern struct Faixa_de_operacao faixa_de_operacao;
 extern struct Temp_variaveis temp;
 extern struct Historico_da_porta historico_da_porta;
 extern struct Valores_atuais valores_atuais;
-
 
 #endif /* LOGIC_FUNCTIONS_H_ */

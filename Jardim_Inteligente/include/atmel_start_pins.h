@@ -11,6 +11,68 @@
 #include <port.h>
 
 /**
+ * \brief Set Controle_Ar_condicionado pull mode
+ *
+ * Configure pin to pull up, down or disable pull mode, supported pull
+ * modes are defined by device used
+ *
+ * \param[in] pull_mode Pin pull mode
+ */
+static inline void Controle_Ar_condicionado_set_pull_mode(const enum port_pull_mode pull_mode)
+{
+	PORTB_set_pin_pull_mode(0, pull_mode);
+}
+
+/**
+ * \brief Set Controle_Ar_condicionado data direction
+ *
+ * Select if the pin data direction is input, output or disabled.
+ * If disabled state is not possible, this function throws an assert.
+ *
+ * \param[in] direction PORT_DIR_IN  = Data direction in
+ *                      PORT_DIR_OUT = Data direction out
+ *                      PORT_DIR_OFF = Disables the pin
+ *                      (low power state)
+ */
+static inline void Controle_Ar_condicionado_set_dir(const enum port_dir dir)
+{
+	PORTB_set_pin_dir(0, dir);
+}
+
+/**
+ * \brief Set Controle_Ar_condicionado level
+ *
+ * Sets output level on a pin
+ *
+ * \param[in] level true  = Pin level set to "high" state
+ *                  false = Pin level set to "low" state
+ */
+static inline void Controle_Ar_condicionado_set_level(const bool level)
+{
+	PORTB_set_pin_level(0, level);
+}
+
+/**
+ * \brief Toggle output level on Controle_Ar_condicionado
+ *
+ * Toggle the pin level
+ */
+static inline void Controle_Ar_condicionado_toggle_level()
+{
+	PORTB_toggle_pin_level(0);
+}
+
+/**
+ * \brief Get level on Controle_Ar_condicionado
+ *
+ * Reads the level on a pin
+ */
+static inline bool Controle_Ar_condicionado_get_level()
+{
+	return PORTB_get_pin_level(0);
+}
+
+/**
  * \brief Set LCD_5 pull mode
  *
  * Configure pin to pull up, down or disable pull mode, supported pull
@@ -631,6 +693,130 @@ static inline bool Leitura_Radiacao_Solar_get_level()
 }
 
 /**
+ * \brief Set Controle_Motor_Bomba_Agua pull mode
+ *
+ * Configure pin to pull up, down or disable pull mode, supported pull
+ * modes are defined by device used
+ *
+ * \param[in] pull_mode Pin pull mode
+ */
+static inline void Controle_Motor_Bomba_Agua_set_pull_mode(const enum port_pull_mode pull_mode)
+{
+	PORTC_set_pin_pull_mode(5, pull_mode);
+}
+
+/**
+ * \brief Set Controle_Motor_Bomba_Agua data direction
+ *
+ * Select if the pin data direction is input, output or disabled.
+ * If disabled state is not possible, this function throws an assert.
+ *
+ * \param[in] direction PORT_DIR_IN  = Data direction in
+ *                      PORT_DIR_OUT = Data direction out
+ *                      PORT_DIR_OFF = Disables the pin
+ *                      (low power state)
+ */
+static inline void Controle_Motor_Bomba_Agua_set_dir(const enum port_dir dir)
+{
+	PORTC_set_pin_dir(5, dir);
+}
+
+/**
+ * \brief Set Controle_Motor_Bomba_Agua level
+ *
+ * Sets output level on a pin
+ *
+ * \param[in] level true  = Pin level set to "high" state
+ *                  false = Pin level set to "low" state
+ */
+static inline void Controle_Motor_Bomba_Agua_set_level(const bool level)
+{
+	PORTC_set_pin_level(5, level);
+}
+
+/**
+ * \brief Toggle output level on Controle_Motor_Bomba_Agua
+ *
+ * Toggle the pin level
+ */
+static inline void Controle_Motor_Bomba_Agua_toggle_level()
+{
+	PORTC_toggle_pin_level(5);
+}
+
+/**
+ * \brief Get level on Controle_Motor_Bomba_Agua
+ *
+ * Reads the level on a pin
+ */
+static inline bool Controle_Motor_Bomba_Agua_get_level()
+{
+	return PORTC_get_pin_level(5);
+}
+
+/**
+ * \brief Set Controle_Motor_Teto pull mode
+ *
+ * Configure pin to pull up, down or disable pull mode, supported pull
+ * modes are defined by device used
+ *
+ * \param[in] pull_mode Pin pull mode
+ */
+static inline void Controle_Motor_Teto_set_pull_mode(const enum port_pull_mode pull_mode)
+{
+	PORTC_set_pin_pull_mode(6, pull_mode);
+}
+
+/**
+ * \brief Set Controle_Motor_Teto data direction
+ *
+ * Select if the pin data direction is input, output or disabled.
+ * If disabled state is not possible, this function throws an assert.
+ *
+ * \param[in] direction PORT_DIR_IN  = Data direction in
+ *                      PORT_DIR_OUT = Data direction out
+ *                      PORT_DIR_OFF = Disables the pin
+ *                      (low power state)
+ */
+static inline void Controle_Motor_Teto_set_dir(const enum port_dir dir)
+{
+	PORTC_set_pin_dir(6, dir);
+}
+
+/**
+ * \brief Set Controle_Motor_Teto level
+ *
+ * Sets output level on a pin
+ *
+ * \param[in] level true  = Pin level set to "high" state
+ *                  false = Pin level set to "low" state
+ */
+static inline void Controle_Motor_Teto_set_level(const bool level)
+{
+	PORTC_set_pin_level(6, level);
+}
+
+/**
+ * \brief Toggle output level on Controle_Motor_Teto
+ *
+ * Toggle the pin level
+ */
+static inline void Controle_Motor_Teto_toggle_level()
+{
+	PORTC_toggle_pin_level(6);
+}
+
+/**
+ * \brief Get level on Controle_Motor_Teto
+ *
+ * Reads the level on a pin
+ */
+static inline bool Controle_Motor_Teto_get_level()
+{
+	return PORTC_get_pin_level(6);
+}
+
+/**
  * \brief Set Interrupcao_Usuario1 pull mode
  *
  * Configure pin to pull up, down or disable pull mode, supported pull
@@ -817,20 +1003,20 @@ static inline bool Interrupcao_Usuario3_get_level()
 }
 
 /**
- * \brief Set Comparador_Pos_Bateria pull mode
+ * \brief Set Controle_LED_PWM pull mode
  *
  * Configure pin to pull up, down or disable pull mode, supported pull
  * modes are defined by device used
  *
  * \param[in] pull_mode Pin pull mode
  */
-static inline void Comparador_Pos_Bateria_set_pull_mode(const enum port_pull_mode pull_mode)
+static inline void Controle_LED_PWM_set_pull_mode(const enum port_pull_mode pull_mode)
 {
-	PORTD_set_pin_pull_mode(6, pull_mode);
+	PORTD_set_pin_pull_mode(5, pull_mode);
 }
 
 /**
- * \brief Set Comparador_Pos_Bateria data direction
+ * \brief Set Controle_LED_PWM data direction
  *
  * Select if the pin data direction is input, output or disabled.
  * If disabled state is not possible, this function throws an assert.
@@ -840,104 +1026,42 @@ static inline void Comparador_Pos_Bateria_set_pull_mode(const enum port_pull_mod
  *                      PORT_DIR_OFF = Disables the pin
  *                      (low power state)
  */
-static inline void Comparador_Pos_Bateria_set_dir(const enum port_dir dir)
+static inline void Controle_LED_PWM_set_dir(const enum port_dir dir)
 {
-	PORTD_set_pin_dir(6, dir);
+	PORTD_set_pin_dir(5, dir);
 }
 
 /**
- * \brief Set Comparador_Pos_Bateria level
+ * \brief Set Controle_LED_PWM level
  *
  * Sets output level on a pin
  *
  * \param[in] level true  = Pin level set to "high" state
  *                  false = Pin level set to "low" state
  */
-static inline void Comparador_Pos_Bateria_set_level(const bool level)
+static inline void Controle_LED_PWM_set_level(const bool level)
 {
-	PORTD_set_pin_level(6, level);
+	PORTD_set_pin_level(5, level);
 }
 
 /**
- * \brief Toggle output level on Comparador_Pos_Bateria
+ * \brief Toggle output level on Controle_LED_PWM
  *
  * Toggle the pin level
  */
-static inline void Comparador_Pos_Bateria_toggle_level()
+static inline void Controle_LED_PWM_toggle_level()
 {
-	PORTD_toggle_pin_level(6);
+	PORTD_toggle_pin_level(5);
 }
 
 /**
- * \brief Get level on Comparador_Pos_Bateria
+ * \brief Get level on Controle_LED_PWM
  *
  * Reads the level on a pin
  */
-static inline bool Comparador_Pos_Bateria_get_level()
+static inline bool Controle_LED_PWM_get_level()
 {
-	return PORTD_get_pin_level(6);
-}
-
-/**
- * \brief Set Comparador_Neg_Bateria pull mode
- *
- * Configure pin to pull up, down or disable pull mode, supported pull
- * modes are defined by device used
- *
- * \param[in] pull_mode Pin pull mode
- */
-static inline void Comparador_Neg_Bateria_set_pull_mode(const enum port_pull_mode pull_mode)
-{
-	PORTD_set_pin_pull_mode(7, pull_mode);
-}
-
-/**
- * \brief Set Comparador_Neg_Bateria data direction
- *
- * Select if the pin data direction is input, output or disabled.
- * If disabled state is not possible, this function throws an assert.
- *
- * \param[in] direction PORT_DIR_IN  = Data direction in
- *                      PORT_DIR_OUT = Data direction out
- *                      PORT_DIR_OFF = Disables the pin
- *                      (low power state)
- */
-static inline void Comparador_Neg_Bateria_set_dir(const enum port_dir dir)
-{
-	PORTD_set_pin_dir(7, dir);
-}
-
-/**
- * \brief Set Comparador_Neg_Bateria level
- *
- * Sets output level on a pin
- *
- * \param[in] level true  = Pin level set to "high" state
- *                  false = Pin level set to "low" state
- */
-static inline void Comparador_Neg_Bateria_set_level(const bool level)
-{
-	PORTD_set_pin_level(7, level);
-}
-
-/**
- * \brief Toggle output level on Comparador_Neg_Bateria
- *
- * Toggle the pin level
- */
-static inline void Comparador_Neg_Bateria_toggle_level()
-{
-	PORTD_toggle_pin_level(7);
-}
-
-/**
- * \brief Get level on Comparador_Neg_Bateria
- *
- * Reads the level on a pin
- */
-static inline bool Comparador_Neg_Bateria_get_level()
-{
-	return PORTD_get_pin_level(7);
+	return PORTD_get_pin_level(5);
 }
 
 #endif /* ATMEL_START_PINS_H_INCLUDED */
